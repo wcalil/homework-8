@@ -1,7 +1,14 @@
 var inquirer = require("inquirer");
+const axios = require('./node_modules/axios');
+var fs = require("fs");
 
 inquirer
     .prompt([
+        {
+            type: "input",
+            name: "userName",
+            message: "What is your GitHub username?"
+        },
         {
             type: "input",
             name: "title",
@@ -47,42 +54,44 @@ inquirer
         {
             type: "input",
             name: "contributorGuide",
-            message: "Add a contributor guideline inc ase you want other developers to contribute to your project"
+            message: "Add a contributor guideline in case you want other developers to contribute to your project"
         }
 
 
-
     ]).then(function (response) {
+        console.log(response.userName);
+        axios.get(`https://api.github.com/users/${response.userName}`)
+            .then(function (res) {
+                console.log(res.data);
 
-        var title = JSON.stringify(response.title, null, '\t');
-        var description = JSON.stringify(response.description, null, '\t');
-        var developmentEnvironment = JSON.stringify(response.developmentEnvironment, null, '\t');
-        var tableOfContents = JSON.stringify(response.tableOfContents, null, '\t');
-        var output = JSON.stringify(response.output, null, '\t');
-        var collaborators = JSON.stringify(response.collaborators, null, '\t');
-        var license = JSON.stringify(response.license, null, '\t');
-        var contributorGuide = JSON.stringify(response.contributorGuide, null, '\t');
 
-        var resultArray = [
-            title,
-            description,
-            developmentEnvironment,
-            tableOfContents,
-            output,
-            collaborators,
-            license,
-            contributorGuide
-        ];
+                // const markdown = `![](${res.data.avatar_url} "My pic")# \n ${response.title}\n${response.description}\n`
 
-        var fs = require("fs");
+                var avatarImg = res.data.avatar_url;
+                var emailGit = res.data.email;
+                const markdown = `\n ![](${avatarImg} "My pic") 
+                \n Email: ${emailGit}
+                \n # Title: ${response.title}
+                \n ## Description: ${response.description}\n 
+                \n ## Development Environment: ${response.developmentEnvironment}\n
+                \n ## Table of Contents: ${response.tableOfContents}\n 
+                \n ## Expected Output: ${response.output}\n 
+                \n ## Collaborators: ${response.collaborators}\n 
+                \n ## License: ${response.license}\n 
+                \n ## Contributor Guide: ${response.contributorGuide}\n
+                 `
 
-        fs.appendFile("log.txt", resultArray + '\n', function (err) {
 
-            if (err) {
-                return console.log(err);
-            }
+                fs.writeFile("README.md", markdown, function (err) {
 
-            console.log("Success!");
+                    if (err) {
+                        return console.log(err);
+                    }
 
-        });
+                    console.log("Success!");
+
+                });
+
+            })
+
     });
