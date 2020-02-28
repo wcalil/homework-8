@@ -64,23 +64,26 @@ inquirer
             .then(function (res) {
                 console.log(res.data);
 
-
-                // const markdown = `![](${res.data.avatar_url} "My pic")# \n ${response.title}\n${response.description}\n`
-
                 var avatarImg = res.data.avatar_url;
                 var emailGit = res.data.email;
                 const markdown = `\n ![](${avatarImg} "My pic") 
-                \n Email: ${emailGit}
-                \n # Title: ${response.title}
-                \n ## Description: ${response.description}\n 
-                \n ## Development Environment: ${response.developmentEnvironment}\n
-                \n ## Table of Contents: ${response.tableOfContents}\n 
-                \n ## Expected Output: ${response.output}\n 
-                \n ## Collaborators: ${response.collaborators}\n 
-                \n ## License: ${response.license}\n 
-                \n ## Contributor Guide: ${response.contributorGuide}\n
+                \n Email: ${emailGit} \n
+                \n # Title: ${response.title} \n
+                \n ## Description
+                \n ${response.description} \n
+                \n ## Development Environment 
+                \n ${response.developmentEnvironment}\n
+                \n ## Table of Contents
+                \n ${response.tableOfContents}\n 
+                \n ## Expected Output
+                \n ${response.output}\n
+                \n ## Collaborators
+                ${response.collaborators}\n 
+                \n ## License:
+                \n ${response.license}\n 
+                \n ## Contributor Guide
+                \n ${response.contributorGuide}\n
                  `
-
 
                 fs.writeFile("README.md", markdown, function (err) {
 
